@@ -19,11 +19,15 @@ CREATE USER HAITEAM
                   DEFAULT TABLESPACE   TS_USER01
                   TEMPORARY TABLESPACE TEMP;
 
--- 사용자 변경
+-- 사용자 기본정보 변경 변경
 ALTER USER HAITEAM
    IDENTIFIED BY HAITEAM2;
    -- ACCOUNT LOCK/UNLOCK
-
+   
+-- 사용자 테이블 스페이스 변경
+ALTER USER HAITEAM
+    DEFAULT TABLESPACE USERS;
+    
 ---------------------------------
 -- 3. 사용자 권한
 ---------------------------------  
