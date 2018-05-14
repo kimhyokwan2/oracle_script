@@ -37,6 +37,48 @@ GRANT CONNECT, RESOURCE, DBA TO HAITEAM;
 -- 사용자 권한 회수 (접속/리소스 및 테이블 생성)
 REVOKE DBA FROM HAITEAM;
 
+
+SELECT * FROM 
+(SELECT 
+        CONCAT(REGIONID,CONCAT('_',PRODUCT)) AS KEY
+        ,REGIONID
+        , PRODUCT
+        , YEARWEEK
+        , CASE WHEN QTY > 700000
+                THEN 700000
+                ELSE QTY END AS QTY
+        FROM KOPO_CHANNEL_SEASONALITY_NEW
+        WHERE 1=1
+        AND PRODUCT IN ('PRODUCT1','PRODUCT2')
+        AND SUBSTR(YEARWEEK,5,6) != '53')A
+LEFT JOIN        
+(SELECT B.KEY
+    , AVG(QTY)
+    , SUM(QTY)
+    , COUNT(QTY)
+FROM (
+    SELECT 
+        CONCAT(REGIONID,CONCAT('_',PRODUCT)) AS KEY
+        ,REGIONID
+        , PRODUCT
+        , YEARWEEK
+        , CASE WHEN QTY > 700000
+                THEN 700000
+                ELSE QTY END AS QTY
+        FROM KOPO_CHANNEL_SEASONALITY_NEW
+        WHERE 1=1
+        AND PRODUCT IN ('PRODUCT1','PRODUCT2')
+        AND SUBSTR(YEARWEEK,5,6) != '53'
+)B
+GROUP BY KEY)B
+ON A.KEY = B.KEY
+WHERE 1=1
+AND REGIONID = 'A43'
+    
+    GROUP BY REGIONID, PRODUCTGROUP
+
+SELECT * FROM KOPO_CHANNEL_SEASONALITY_NEW
+
 ---------------------------------
 -- 4. 샘플 테이블 생성 (* 생성한 사용자 정보로 로그인)
 ---------------------------------  
