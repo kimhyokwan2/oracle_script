@@ -47,3 +47,96 @@ FROM KOPO_CHANNEL_SEASONALITY_NEW
     -- 만약 10자리가 아니면 왼쪽에 0으로 채운다
     -- 이후 고객코드의 뒷 4자리는 암호화를 위해 * 처리를 하세요
     
+    SELECT 
+    REPLACE(LPAD(CUSTOMERCODE,10,0), 
+            SUBSTR(LPAD(CUSTOMERCODE,10,0),-4) , '****')
+    FROM KOPO_CUSTOMERDATA
+    
+----------------------------------------------------------
+----------------- 숫자 함수 -------------------------------
+----------------------------------------------------------   
+
+
+SELECT
+    ROUND(12.345,2)
+    ,CEIL(12.345)
+    ,FLOOR(12.345)
+    ,MOD(12,10)
+    ,POWER(3,2)
+    FROM DUAL
+
+SELECT
+        FIRST_NUMBER,
+        SECOND_NUMBER,
+        FIRST_NUMBER/SECOND_NUMBER AS AVG,
+        ROUND(FIRST_NUMBER/SECOND_NUMBER) AS ROUND_EX,
+        CEIL(FIRST_NUMBER/SECOND_NUMBER) AS CEIL_EX,
+        FLOOR(FIRST_NUMBER/SECOND_NUMBER) AS FLOOR_EX,
+        MOD(FIRST_NUMBER, SECOND_NUMBER) AS MOD_EX,
+        POWER(FIRST_NUMBER, SECOND_NUMBER) AS POW_EX
+        FROM NUMBER_EXAMPLE
+
+
+----------------------------------------------------------
+----------------- 날짜 함수 -------------------------------
+----------------------------------------------------------   
+
+SELECT
+    SYSDATE,
+    NEXT_DAY(SYSDATE,2),
+    LAST_DAY(SYSDATE)
+    FROM DUAL
+    
+SELECT TO_CHAR(SYSDATE-7, 'YYYYWW') FROM DUAL
+
+SELECT TO_CHAR(SYSDATE, 'YYYYWW') FROM DUAL
+
+SELECT TO_CHAR(SYSDATE-30, 'YYYYMMDD') FROM DUAL
+
+SELECT TO_CHAR(SYSDATE, 'YYYYMMDD') FROM DUAL
+
+SELECT TO_CHAR(SYSDATE-1, 'YYYYMMDD') FROM DUAL
+  
+SELECT TO_CHAR(SYSDATE, 'YYYY MON DD HH MI') FROM DUAL 
+
+SELECT TO_NUMBER('20180514')*2 FROM DUAL
+
+SELECT '20180514'*2 FROM DUAL
+
+SELECT TO_DATE('20180514') FROM DUAL
+
+
+SELECT CONCAT(11,22) FROM DUAL
+
+SELECT * FROM SORT_EXAMPLE
+ORDER BY LPAD(WEEK,2,0)
+
+CREATE TABLE SORT_EXAMPLE
+(
+ WEEK VARCHAR2(100),
+ QTY NUMBER
+)
+
+EDIT SORT_EXAMPLE
+
+
+
+
+SELECT ITEM
+       ,SUM(DIFF)
+       ,COUNT(*)
+       ,SUM(DIFF)/COUNT(*)
+       ,SUM(DIFF_POW)
+       ,COUNT(*)
+       ,SQRT(SUM(DIFF_POW)/COUNT(*)) AS RMSE
+        FROM (
+            SELECT ITEM
+                   ,YEARWEEK
+                   ,QTY
+                   ,PREDICTION
+                   ,ABS(QTY-PREDICTION) AS DIFF
+                   ,POWER(ABS(QTY-PREDICTION),2) AS DIFF_POW
+                   FROM RMSE_MAE_EXAMPLE
+        )
+GROUP BY ITEM
+
