@@ -65,6 +65,8 @@ SELECT
     ,POWER(3,2)
     FROM DUAL
 
+-- MOD 연산은 나머지 연산으로
+-- 특정 3주차마다 ACTION을 취할경우 활용
 SELECT
         FIRST_NUMBER,
         SECOND_NUMBER,
@@ -99,44 +101,37 @@ SELECT TO_CHAR(SYSDATE-1, 'YYYYMMDD') FROM DUAL
   
 SELECT TO_CHAR(SYSDATE, 'YYYY MON DD HH MI') FROM DUAL 
 
-SELECT TO_NUMBER('20180514')*2 FROM DUAL
+----------------------------------------------------------
+----------------- 고급 숫자 다루기 -------------------------
+----------------------------------------------------------   
 
-SELECT '20180514'*2 FROM DUAL
+    -- 문자컬럼 week 오름차순 정렬
+    SELECT * FROM SORT_EXAMPLE
+    ORDER BY LPAD(WEEK,2,0)
 
-SELECT TO_DATE('20180514') FROM DUAL
+    -- 정확도 산출 1 - ABS(FCST-ACTUAL) / FCST
+    SELECT 
+        YEARWEEK
+        ,ACTUAL
+        ,FCST
+        ,ROUND((1-ABS(FCST-ACTUAL)/FCST),4) * 100 AS ACCURACY
+        FROM RMSE_MAE_EXAMPLE2
 
-
-SELECT CONCAT(11,22) FROM DUAL
-
-SELECT * FROM SORT_EXAMPLE
-ORDER BY LPAD(WEEK,2,0)
-
-CREATE TABLE SORT_EXAMPLE
-(
- WEEK VARCHAR2(100),
- QTY NUMBER
-)
-
-EDIT SORT_EXAMPLE
-
-
-
-
-SELECT ITEM
-       ,SUM(DIFF)
-       ,COUNT(*)
-       ,SUM(DIFF)/COUNT(*)
-       ,SUM(DIFF_POW)
-       ,COUNT(*)
-       ,SQRT(SUM(DIFF_POW)/COUNT(*)) AS RMSE
-        FROM (
-            SELECT ITEM
-                   ,YEARWEEK
-                   ,QTY
-                   ,PREDICTION
-                   ,ABS(QTY-PREDICTION) AS DIFF
-                   ,POWER(ABS(QTY-PREDICTION),2) AS DIFF_POW
-                   FROM RMSE_MAE_EXAMPLE
-        )
-GROUP BY ITEM
-
+    -- RMSE(Root Mean Square Error / MAE) Extract
+    SELECT ITEM
+           ,SUM(DIFF)
+           ,COUNT(*)
+           ,SUM(DIFF)/COUNT(*)
+           ,SUM(DIFF_POW)
+           ,COUNT(*)
+           ,SQRT(SUM(DIFF_POW)/COUNT(*)) AS RMSE
+            FROM (
+                SELECT ITEM
+                       ,YEARWEEK
+                       ,QTY
+                       ,PREDICTION
+                       ,ABS(QTY-PREDICTION) AS DIFF
+                       ,POWER(ABS(QTY-PREDICTION),2) AS DIFF_POW
+                       FROM RMSE_MAE_EXAMPLE
+            )
+    GROUP BY ITEM
