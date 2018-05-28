@@ -117,21 +117,4 @@ SELECT TO_CHAR(SYSDATE, 'YYYY MON DD HH MI') FROM DUAL
         ,ROUND((1-ABS(FCST-ACTUAL)/FCST),4) * 100 AS ACCURACY
         FROM RMSE_MAE_EXAMPLE2
 
-    -- RMSE(Root Mean Square Error / MAE) Extract
-    SELECT ITEM
-           ,SUM(DIFF)
-           ,COUNT(*)
-           ,SUM(DIFF)/COUNT(*)
-           ,SUM(DIFF_POW)
-           ,COUNT(*)
-           ,SQRT(SUM(DIFF_POW)/COUNT(*)) AS RMSE
-            FROM (
-                SELECT ITEM
-                       ,YEARWEEK
-                       ,QTY
-                       ,PREDICTION
-                       ,ABS(QTY-PREDICTION) AS DIFF
-                       ,POWER(ABS(QTY-PREDICTION),2) AS DIFF_POW
-                       FROM RMSE_MAE_EXAMPLE
-            )
-    GROUP BY ITEM
+SELECT * FROM RMSE_MAE_EXAMPLE
